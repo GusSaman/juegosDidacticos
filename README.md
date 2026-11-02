@@ -1,3 +1,4 @@
+
 # 🎮 Juegos Didácticos — Material Didáctico Rayitas
 
 Aplicación recreativa y didáctica que **reproduce fielmente** los dos PowerPoint
@@ -83,3 +84,7 @@ escenario 16:9 (el mismo sistema que usa PowerPoint).
   corresponde a la zona que disparaba `ppaction://hlinkshowjump?jump=nextslide`.
 - No se incluyen materiales protegidos más allá de los clips/imagenes
   originales usados con fines didácticos internos.
+=======
+# juegosDidacticos
+Esta compuesto por 2 juegos 
+>>>>>>> 38a5cb12edc6bf7fc6791f40e86e1ff1f26fb00f
