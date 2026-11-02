@@ -212,7 +212,10 @@
       rafId = null;
       if (selected) {
         selected.el.classList.add('sel');
+        App.audio.sfx('click');
         App.fx.toast('¡El número es el <b>' + selected.n + '</b>!', { kind: 'good', small: true, life: 1900 });
+        // El número que indica la flecha se abre de inmediato en su trazo
+        App.scene.go('numeros.trazo', { n: selected.n });
       }
     }
 
