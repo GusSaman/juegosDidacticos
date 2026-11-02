@@ -1,0 +1,543 @@
+/* =========================================================
+   Juegos Didácticos · Material Didáctico Rayitas
+   Estilos generales. Todo se dimensiona con --u (1% del
+   ancho del escenario), definido por js/core/stage.js, de
+   modo que la app escala igual en notebook, tablet y TV.
+   ========================================================= */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #10131c;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  user-select: none;
+}
+
+body {
+  font-family: "Comic Sans MS", "Comic Neue", "Chalkboard SE", "Segoe UI", system-ui, sans-serif;
+  color: #fff;
+}
+
+img { -webkit-user-drag: none; user-drag: none; }
+
+#app {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 700px at 20% 10%, #1d2540 0%, transparent 60%),
+    radial-gradient(1000px 800px at 85% 90%, #2a1c3d 0%, transparent 55%),
+    #10131c;
+}
+
+/* ---------- Escenario 16:9 ---------- */
+#stage {
+  --u: 16px;                     /* 1u = 1% del ancho del escenario */
+  position: relative;
+  width: 100vw;
+  height: calc(100vw * 9 / 16);
+  overflow: hidden;
+  background: #0b0d14;
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 6) rgba(0,0,0,.6);
+  touch-action: manipulation;
+}
+
+#screen { position: absolute; inset: 0; }
+
+#fx-layer { position: absolute; inset: 0; pointer-events: none; z-index: 60; }
+
+/* ---------- Escenas ---------- */
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity .28s ease, transform .28s ease;
+}
+.scene.entering { opacity: 0; transform: scale(.985); }
+.scene.leaving  { opacity: 0; transform: scale(1.015); pointer-events: none; }
+
+/* Imagen a pantalla completa (fondos de los PPT) */
+.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Elemento posicionado con % (coords. heredadas del PPT) */
+.abs { position: absolute; }
+
+/* Zona clicable transparente sobre la imagen */
+.zone {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: calc(var(--u) * 1.2);
+  outline: none;
+  transition: box-shadow .18s ease, transform .12s ease;
+}
+.zone:hover {
+  box-shadow: inset 0 0 0 calc(var(--u) * .35) rgba(255,255,255,.75),
+              0 0 calc(var(--u) * 1.6) rgba(255,255,255,.35);
+}
+.zone:active { transform: scale(.985); }
+.zone:focus-visible {
+  box-shadow: inset 0 0 0 calc(var(--u) * .5) #ffe55c,
+              0 0 calc(var(--u) * 2.4) rgba(255,229,92,.75);
+}
+.zone.no-hover:hover { box-shadow: none; }
+.zone.no-hover:focus-visible {
+  box-shadow: inset 0 0 0 calc(var(--u) * .5) #ffe55c,
+              0 0 calc(var(--u) * 2.4) rgba(255,229,92,.75);
+}
+
+/* Imagen clicable genérica (botones dibujados) */
+.img-btn {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: transform .15s ease, filter .15s ease;
+}
+.img-btn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+.img-btn:hover  { transform: scale(1.05); filter: drop-shadow(0 0 calc(var(--u)*.8) rgba(255,255,255,.8)); }
+.img-btn:active { transform: scale(.97); }
+.img-btn:focus-visible {
+  outline: calc(var(--u) * .4) solid #ffe55c;
+  outline-offset: calc(var(--u) * .4);
+  border-radius: calc(var(--u) * .8);
+}
+
+/* ---------- Pistas / textos superpuestos ---------- */
+.hint {
+  position: absolute;
+  font-size: calc(var(--u) * 3);
+  font-weight: bold;
+  color: #fff;
+  background: rgba(17, 20, 32, .72);
+  padding: calc(var(--u) * .9) calc(var(--u) * 2);
+  border-radius: calc(var(--u) * 3);
+  border: calc(var(--u) * .22) solid rgba(255,255,255,.85);
+  box-shadow: 0 calc(var(--u) * .5) calc(var(--u) * 1.5) rgba(0,0,0,.35);
+  animation: hintPulse 1.5s ease-in-out infinite;
+  white-space: nowrap;
+  pointer-events: none;
+}
+@keyframes hintPulse {
+  0%, 100% { transform: scale(1);    opacity: .92; }
+  50%      { transform: scale(1.07); opacity: 1;   }
+}
+
+/* ---------- Toasts / mensajes ---------- */
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: calc(var(--u) * 5);
+  font-weight: bold;
+  color: #233;
+  background: #fff;
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 4);
+  border-radius: calc(var(--u) * 3);
+  border: calc(var(--u) * .4) solid #233;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0,0,0,.35);
+  z-index: 70;
+  pointer-events: none;
+  text-align: center;
+  animation: toastIn .3s cubic-bezier(.2,1.6,.4,1);
+}
+.toast.good  { border-color: #159e4b; color: #0e6b33; background: #eafff1; }
+.toast.bad   { border-color: #e0392b; color: #a3211a; background: #ffefee; }
+.toast.small { font-size: calc(var(--u) * 3); padding: calc(var(--u)*1) calc(var(--u)*2.5); }
+.toast.out   { animation: toastOut .3s ease forwards; }
+@keyframes toastIn  { from { opacity: 0; transform: translate(-50%,-50%) scale(.6); } to { opacity: 1; transform: translate(-50%,-50%) scale(1); } }
+@keyframes toastOut { to { opacity: 0; transform: translate(-50%,-64%) scale(.95); } }
+
+/* ---------- Confeti ---------- */
+.confetti {
+  position: absolute;
+  width: calc(var(--u) * .9);
+  height: calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * .2);
+  animation: confettiFly 2.2s cubic-bezier(.15,.6,.4,1) forwards;
+}
+@keyframes confettiFly {
+  0%   { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  75%  { opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+}
+
+/* ---------- Efectos de feedback ---------- */
+.shake { animation: shake .5s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(calc(var(--u) * -1.2)); }
+  40% { transform: translateX(calc(var(--u) * 1.2)); }
+  60% { transform: translateX(calc(var(--u) * -.8)); }
+  80% { transform: translateX(calc(var(--u) * .8)); }
+}
+.flash-red  { animation: flashRed .6s ease; }
+.flash-green{ animation: flashGreen .7s ease; }
+@keyframes flashRed   { 0% { background: rgba(224,57,43,.0); } 25% { background: rgba(224,57,43,.5); } 100% { background: rgba(224,57,43,0); } }
+@keyframes flashGreen { 0% { background: rgba(28,190,90,.0); } 25% { background: rgba(28,190,90,.5); } 100% { background: rgba(28,190,90,0); } }
+
+/* ---------- HUD (controles superiores) ---------- */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity .3s ease, transform .3s ease;
+}
+#hud.sleep { opacity: 0; transform: translateX(-50%) translateY(-105%); pointer-events: none; }
+#hud.awake { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.hud-tab {
+  border: 0;
+  cursor: pointer;
+  padding: calc(var(--u) * .3) calc(var(--u) * 1.2) calc(var(--u) * .5);
+  border-radius: 0 0 calc(var(--u) * 1.4) calc(var(--u) * 1.4);
+  background: rgba(12, 15, 26, .78);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s ease;
+}
+#hud.awake .hud-tab { visibility: hidden; }
+.hud-tab:hover, .hud-tab:focus-visible { background: rgba(30,36,60,.95); outline: none; }
+
+.hud-bar {
+  display: flex;
+  gap: calc(var(--u) * .6);
+  padding: calc(var(--u) * .6) calc(var(--u) * 1);
+  background: rgba(12, 15, 26, .82);
+  border: calc(var(--u) * .12) solid rgba(255,255,255,.18);
+  border-top: 0;
+  border-radius: 0 0 calc(var(--u) * 1.6) calc(var(--u) * 1.6);
+  backdrop-filter: blur(4px);
+}
+.hud-btn {
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 4.6);
+  border: 0;
+  border-radius: calc(var(--u) * 1);
+  background: rgba(255,255,255,.1);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, transform .12s ease;
+}
+.hud-btn svg { width: 62%; height: 62%; }
+.hud-btn:hover  { background: rgba(255,255,255,.26); transform: translateY(calc(var(--u) * -.15)); }
+.hud-btn:active { transform: scale(.94); }
+.hud-btn:focus-visible { outline: calc(var(--u) * .3) solid #ffe55c; outline-offset: calc(var(--u) * .15); }
+.hud-btn[hidden] { display: none; }
+.hud-btn .mute-slash { display: none; }
+.hud-btn.muted .mute-slash { display: block; }
+
+/* =========================================================
+   MENÚ PRINCIPAL
+   ========================================================= */
+.home-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,214,59,.20), transparent 42%),
+    radial-gradient(circle at 85% 25%, rgba(255,76,146,.22), transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(58,196,255,.20), transparent 55%),
+    linear-gradient(160deg, #1b2a5e 0%, #3a2270 55%, #123b52 100%);
+}
+.home-inner {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--u) * 4) calc(var(--u) * 4) calc(var(--u) * 2.5);
+}
+.home-title {
+  margin: 0;
+  font-size: calc(var(--u) * 6.4);
+  line-height: 1.05;
+  text-align: center;
+  letter-spacing: .02em;
+  text-shadow: 0 calc(var(--u)*.35) 0 rgba(0,0,0,.35);
+  background: linear-gradient(90deg,#ff5f6d,#ffc371,#47e0a0,#4facfe,#c471f5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.home-sub {
+  margin: calc(var(--u) * .8) 0 calc(var(--u) * 3);
+  font-size: calc(var(--u) * 2.3);
+  color: rgba(255,255,255,.85);
+  text-align: center;
+}
+.home-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 3.5);
+  justify-content: center;
+  align-items: stretch;
+  flex: 1;
+  width: 100%;
+}
+.game-card {
+  position: relative;
+  width: calc(var(--u) * 40);
+  max-width: 46%;
+  border: 0;
+  padding: 0;
+  border-radius: calc(var(--u) * 2.4);
+  overflow: hidden;
+  cursor: pointer;
+  background: #000;
+  box-shadow: 0 calc(var(--u)*1.2) calc(var(--u)*3) rgba(0,0,0,.45);
+  transition: transform .2s cubic-bezier(.2,1.4,.4,1), box-shadow .2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.game-card:hover, .game-card:focus-visible {
+  transform: translateY(calc(var(--u) * -1)) scale(1.02);
+  box-shadow: 0 calc(var(--u)*2) calc(var(--u)*4.5) rgba(0,0,0,.55);
+  outline: none;
+}
+.game-card:focus-visible { box-shadow: 0 0 0 calc(var(--u)*.5) #ffe55c, 0 calc(var(--u)*2) calc(var(--u)*4.5) rgba(0,0,0,.55); }
+.game-card .cover {
+  position: relative;
+  width: 100%;
+  /* 16:9 fijo (fallback universal; no depende de aspect-ratio) */
+  height: calc(var(--u) * 22.5);
+  overflow: hidden;
+}
+.game-card .cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.game-card .cover::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+.game-card .meta {
+  position: relative;
+  padding: calc(var(--u) * 1.4) calc(var(--u) * 2) calc(var(--u) * 1.8);
+  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+  border-top: calc(var(--u) * .2) solid rgba(255,255,255,.25);
+  text-align: left;
+}
+.game-card .meta h2 {
+  margin: 0;
+  font-size: calc(var(--u) * 2.9);
+  line-height: 1.1;
+  color: #fff;
+}
+.game-card .meta p {
+  margin: calc(var(--u) * .5) 0 0;
+  font-size: calc(var(--u) * 1.8);
+  color: rgba(255,255,255,.82);
+  padding-right: calc(var(--u) * 12); /* deja espacio para la etiqueta JUGAR */
+}
+.game-card .play {
+  position: absolute;
+  right: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 1.6);
+  font-size: calc(var(--u) * 2.4);
+  font-weight: bold;
+  padding: calc(var(--u) * .6) calc(var(--u) * 2);
+  border-radius: calc(var(--u) * 3);
+  color: #17203a;
+  background: linear-gradient(180deg, #ffe98a, #ffc531);
+  box-shadow: 0 calc(var(--u)*.4) 0 #c99400;
+}
+.home-foot {
+  font-size: calc(var(--u) * 1.55);
+  color: rgba(255,255,255,.6);
+  text-align: center;
+  margin-top: calc(var(--u) * 1.5);
+}
+.home-foot b { color: rgba(255,255,255,.85); font-weight: bold; }
+
+/* =========================================================
+   JUEGO: ESCRIBIENDO LOS NÚMEROS
+   ========================================================= */
+.ruleta-grupo {
+  position: absolute;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+.ruleta-grupo > .ruleta-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.zona-num {
+  position: absolute;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: box-shadow .2s ease, transform .15s ease;
+}
+.zona-num:hover {
+  box-shadow: inset 0 0 calc(var(--u)*2) rgba(255,255,255,.9), 0 0 calc(var(--u)*2) rgba(255,255,255,.6);
+}
+.zona-num:focus-visible { outline: calc(var(--u)*.45) solid #ffe55c; outline-offset: calc(var(--u)*-.4); }
+.zona-num.sel {
+  animation: selGlow 1s ease-in-out infinite;
+  box-shadow: inset 0 0 calc(var(--u)*2.4) #fff, 0 0 calc(var(--u)*3) #ffe55c;
+}
+@keyframes selGlow {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.12); filter: brightness(1.25); }
+}
+
+.pulso-suave { animation: pulseSoft 1.8s ease-in-out infinite; }
+@keyframes pulseSoft { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+.gif-trazo {
+  position: absolute;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+/* =========================================================
+   JUEGO: EL CHANGO TIAGO
+   ========================================================= */
+.zona-resp {
+  position: absolute;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: calc(var(--u) * .6);
+  transition: box-shadow .15s ease;
+}
+.zona-resp:hover { box-shadow: inset 0 0 0 calc(var(--u)*.3) rgba(255,255,255,.75); }
+.zona-resp:focus-visible { outline: calc(var(--u)*.5) solid #ffe55c; outline-offset: calc(var(--u)*-.5); }
+
+.overlay-card {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  width: calc(var(--u) * 52);
+  padding: calc(var(--u) * 3) calc(var(--u) * 4);
+  background: rgba(16, 20, 34, .93);
+  border: calc(var(--u) * .35) solid #ffe55c;
+  border-radius: calc(var(--u) * 2.5);
+  text-align: center;
+  box-shadow: 0 calc(var(--u)*1.5) calc(var(--u)*5) rgba(0,0,0,.6);
+  animation: toastIn .35s cubic-bezier(.2,1.5,.4,1);
+}
+.overlay-card h2 { margin: 0 0 calc(var(--u)*1); font-size: calc(var(--u)*5); color: #ffe55c; }
+.overlay-card .stars { font-size: calc(var(--u)*6); letter-spacing: calc(var(--u)*.6); color: #ffd93b; }
+.overlay-card p { margin: calc(var(--u)*.8) 0; font-size: calc(var(--u)*2.6); color: #fff; }
+.overlay-card .btn-row { display: flex; gap: calc(var(--u)*1.5); justify-content: center; margin-top: calc(var(--u)*2); }
+
+.btn-big {
+  font-family: inherit;
+  font-size: calc(var(--u) * 2.6);
+  font-weight: bold;
+  color: #17203a;
+  background: linear-gradient(180deg, #ffe98a, #ffc531);
+  border: 0;
+  border-radius: calc(var(--u) * 3);
+  padding: calc(var(--u) * 1.2) calc(var(--u) * 3.4);
+  cursor: pointer;
+  box-shadow: 0 calc(var(--u) * .5) 0 #c99400;
+  transition: transform .12s ease, filter .15s ease;
+}
+.btn-big.ghost {
+  color: #fff;
+  background: linear-gradient(180deg, #5a6788, #3d4664);
+  box-shadow: 0 calc(var(--u) * .5) 0 #262d45;
+}
+.btn-big:hover { filter: brightness(1.08); transform: translateY(calc(var(--u)*-.2)); }
+.btn-big:active { transform: translateY(calc(var(--u)*.3)); box-shadow: none; }
+.btn-big:focus-visible { outline: calc(var(--u)*.4) solid #fff; outline-offset: calc(var(--u)*.3); }
+
+/* Marcador de puntos (quiz) */
+.score-chip {
+  position: absolute;
+  left: calc(var(--u) * 1.5);
+  top: calc(var(--u) * 1.5);
+  font-size: calc(var(--u) * 2.4);
+  font-weight: bold;
+  color: #233;
+  background: rgba(255,255,255,.92);
+  border: calc(var(--u) * .25) solid #233;
+  border-radius: calc(var(--u) * 3);
+  padding: calc(var(--u) * .5) calc(var(--u) * 2);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Botón "atrás" sutil dentro de escenas con arte a pantalla completa */
+.back-fab {
+  position: absolute;
+  left: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 2);
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border-radius: 50%;
+  border: calc(var(--u) * .25) solid rgba(255,255,255,.9);
+  background: rgba(12,15,26,.55);
+  color: #fff;
+  cursor: pointer;
+  font-size: calc(var(--u) * 3.2);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  opacity: .75;
+  transition: opacity .15s ease, transform .15s ease;
+}
+.back-fab:hover, .back-fab:focus-visible { opacity: 1; transform: scale(1.08); outline: none; }
+
+/* Indicador de progreso del cuento */
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--u) * 1.6);
+  transform: translateX(-50%);
+  display: flex;
+  gap: calc(var(--u) * .8);
+  z-index: 5;
+  pointer-events: none;
+}
+.dots i {
+  width: calc(var(--u) * 1.1);
+  height: calc(var(--u) * 1.1);
+  border-radius: 50%;
+  background: rgba(255,255,255,.45);
+  border: calc(var(--u) * .16) solid rgba(0,0,0,.35);
+}
+.dots i.on { background: #ffd93b; }
+
+/* ---------- Ajustes de pantalla ---------- */
+@media (max-aspect-ratio: 4/3) {
+  /* Tablets verticales: se mantiene 16:9 con barras (ya lo hace #app) */
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="description" content="App didáctica recreativa con juegos para notebook, tablet y TV smart. Material Didáctico Rayitas.">
+<title>Juegos Didácticos · Material Rayitas</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="app">
+  <!-- Escenario 16:9: todas las escenas se dibujan dentro y escalan a cualquier pantalla -->
+  <div id="stage" role="application" aria-label="Juegos didácticos">
+    <div id="screen"><!-- aquí se montan las escenas --></div>
+    <div id="fx-layer" aria-hidden="true"></div>
+
+    <!-- Barra de control (aparece con cualquier toque / tecla / movimiento) -->
+    <div id="hud" class="sleep">
+      <button id="hud-tab" class="hud-tab" type="button" aria-label="Mostrar controles">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 9h16M4 15h16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+      <div class="hud-bar" role="toolbar" aria-label="Controles">
+        <button class="hud-btn" data-act="back" type="button" title="Atrás (Esc)" aria-label="Atrás">
+          <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="hud-btn" data-act="home" type="button" title="Inicio (H)" aria-label="Inicio">
+          <svg viewBox="0 0 24 24"><path d="M4 11.5L12 4l8 7.5M6.5 10.5V20h11v-9.5" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="hud-btn" data-act="music" type="button" title="Música (M)" aria-label="Música">
+          <svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.6" cy="18" r="2.6" fill="currentColor"/><circle cx="16.6" cy="16" r="2.6" fill="currentColor"/><path class="mute-slash" d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        </button>
+        <button class="hud-btn" data-act="full" type="button" title="Pantalla completa (F)" aria-label="Pantalla completa">
+          <svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <p style="color:#fff;font-family:sans-serif;text-align:center;padding:2rem">
+    Esta aplicación necesita JavaScript. Actívalo y vuelve a cargar la página.
+  </p>
+</noscript>
+
+<!-- Núcleo (orden importante: registry → audio → effects → stage) -->
+<script src="js/core/registry.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/core/effects.js"></script>
+<script src="js/core/stage.js"></script>
+
+<!-- Juegos: para agregar uno nuevo basta con crear el archivo y sumar una línea aquí -->
+<script src="js/games/numeros.js"></script>
+<script src="js/games/tiago.js"></script>
+
+<!-- Menú principal y arranque -->
+<script src="js/main.js"></script>
+</body>
+</html>
